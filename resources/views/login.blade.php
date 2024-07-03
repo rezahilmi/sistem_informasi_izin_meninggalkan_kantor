@@ -66,7 +66,7 @@
                 <img src="/img/image.png" alt="image" class="mx-auto mb-6 h-20">
                 <h1 class="w-[439px] h-[65px] text-black text-xl font-bold font-['Inter']">Izin Meninggalkan Kantor</h1>
                 <br>
-                <h3 class="w-[400px] text-black text-sm font-medium font-['Inter']">Selamat datang di sistem informasi izin meninggalkan kantor <br> PT. Example</h3>
+                <h3 class="w-[400px] text-black text-sm font-medium font-['Inter']">Selamat datang di sistem informasi izin meninggalkan kantor <br> PT. Company</h3>
             </div>
         </div>
     </div>
