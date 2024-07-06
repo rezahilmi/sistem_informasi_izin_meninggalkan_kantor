@@ -27,20 +27,20 @@ use Illuminate\Support\Facades\DB;
 
 class ControllerAtasan extends Controller
 {
-  function index()
-  {
+    function index()
+    {
     $countPribadi = Izin::where('nip',auth()->user()->nip)
-                      ->where('keperluan', 0)
-                      ->where('status', 1)
-                      ->whereYear('tanggal', date('Y'))
-                      ->count();
+                        ->where('keperluan', 0)
+                        ->where('status', 1)
+                        ->whereYear('tanggal', date('Y'))
+                        ->count();
     $countDinas = Izin::where('nip',auth()->user()->nip)
-                      ->where('keperluan', 1)
-                      ->where('status', 1)
-                      ->whereYear('tanggal', date('Y'))
-                      ->count();
+                        ->where('keperluan', 1)
+                        ->where('status', 1)
+                        ->whereYear('tanggal', date('Y'))
+                        ->count();
 
-  $countsIzinPerMonth = [];
+    $countsIzinPerMonth = [];
 
     for ($bulan = 1; $bulan <= 12; $bulan++) {
         $countIzin = Pegawai::where('pegawai.nip', auth()->user()->nip)
@@ -138,14 +138,6 @@ class ControllerAtasan extends Controller
         }
         arsort($data1);
         arsort($data2);
-    // $pegawaiIzinDinas = Pegawai::whereHas('izin', function ($query) {
-    //     $query->where('keperluan', 1);
-    // })->with('izin')->get();
-
-    //     $data2 = [];
-    //     foreach ($pegawaiIzinDinas as $pegawai) {
-    //         $data2[$pegawai->nama] = $pegawai->izin->count();
-    //     }
 
     $belumDisetujui0 = Pegawai::join('izin','pegawai.nip','=','izin.nip')
             ->where(function($query) use ($atasan) {
@@ -237,10 +229,9 @@ class ControllerAtasan extends Controller
     } else if($tidakDisetujui0 = 0 && $tidakDisetujui1 > 0){
         $persenTidakDisetujui = 100;
     }
-    // return dd($pegawai->count());
     return view('atasan/dashboard', compact('tidakDisetujui','disetujui','countsIzinPerMonth','countDinas','countPribadi','jumlahPegawai','events','data1','data2','countsPerMonth','pegawaiHariIni','belumDisetujui1','disetujui1','tidakDisetujui1','persenBelumDisetujui','persenDisetujui','persenTidakDisetujui'));
-  }
-  function getPersetujuanIzin()
+    }
+    function getPersetujuanIzin()
     {
         $izinData = Pegawai::join('izin', 'pegawai.nip', '=', 'izin.nip')
             ->join('bidang', 'pegawai.id_bidang', '=', 'bidang.id_bidang')
@@ -260,26 +251,21 @@ class ControllerAtasan extends Controller
 
       // $tanggal_izin_end = $izin->tanggal . ' ' . $izin->waktu_kembali;
 
-      return view('atasan/persetujuan_izin', compact('izin'));
+    return view('atasan/persetujuan_izin', compact('izin'));
     }
-  function persetujuanIzin(Request $request, $id, $nip)
+    function persetujuanIzin(Request $request, $id, $nip)
     {
 
         $persetujuan = $request->input('persetujuan');
         $izin = Izin::where('id', $id)->firstOrFail();
         $pegawai = Izin::where('izin.id', $izin->id)
-          ->join('users', 'izin.nip', '=', 'users.nip')
-          ->join('pegawai', 'izin.nip', '=', 'pegawai.nip')
-          ->join('bidang', 'pegawai.id_bidang', '=', 'bidang.id_bidang')
-          ->select('izin.*','pegawai.*','bidang.*','users.*')
-          ->first();
+            ->join('users', 'izin.nip', '=', 'users.nip')
+            ->join('pegawai', 'izin.nip', '=', 'pegawai.nip')
+            ->join('bidang', 'pegawai.id_bidang', '=', 'bidang.id_bidang')
+            ->select('izin.*','pegawai.*','bidang.*','users.*')
+            ->first();
         $atasan = Pegawai::where('nip',auth()->user()->nip)
                         ->first();
-        // $nama_atasan = Izin::where('id', $id)
-        //     ->join('pegawai','izin.nip','=','pegawai.nip')
-        //     ->where('nip_penyetuju', 'pegawai.nip')
-        //     ->select('pegawai.*')
-        //     ->first();
 
         $tanggal_izin_end = $pegawai->tanggal . ' ' . $pegawai->waktu_kembali;
         $tanggalWaktuKembali = Carbon::parse($tanggal_izin_end, 'Asia/Jakarta');
@@ -322,7 +308,7 @@ class ControllerAtasan extends Controller
             
             $folderPath = public_path('surat izin keluar kantor');
             if (!is_dir($folderPath)) {
-                mkdir($folderPath, 0777, true); // Buat folder jika belum ada
+                mkdir($folderPath, 0777, true);
             }
 
             $filePath = $folderPath . '/surat_izin_' . $izinId . '.docx';
@@ -391,7 +377,7 @@ class ControllerAtasan extends Controller
             ->get();
 
 
-      return view('atasan/laporan_izin', compact('izin'));
+    return view('atasan/laporan_izin', compact('izin'));
     }
     function filterDate(Request $request)
     {
@@ -426,8 +412,6 @@ class ControllerAtasan extends Controller
             ->get(); 
 
         return view('atasan/laporan_izin', compact('izin'));
-        // return response()->json($izin);
-        // return dd($min_date);
     }
     function getDaftarPegawai()
     {
@@ -440,7 +424,7 @@ class ControllerAtasan extends Controller
             ->get();
 
 
-      return view('atasan/daftar_pegawai', compact('pegawai'));
+    return view('atasan/daftar_pegawai', compact('pegawai'));
     }
     function pilihTL($nip)
     {
@@ -470,7 +454,6 @@ class ControllerAtasan extends Controller
     
     toastr()->positionClass('toast-top-center')->addInfo('Anda mengambil cuti');
     return redirect()->back();
-    // return dd($cekTeamLeader);
     }
     function selesaiCuti()
     {
@@ -493,8 +476,6 @@ class ControllerAtasan extends Controller
             $atasan->update(['role' => $atasan->temporary_role,'temporary_role' => null]);
             $teamLeader->update(['team_leader' => null]);
         }
-
-    //   return dd($atasan);
     return redirect()->back();
     }
 }

@@ -118,7 +118,6 @@ class ControllerPegawai extends Controller
           'nip' => $request->input('nip'),
       ]);
 
-      // Redirect atau tampilkan pesan berhasil update
       return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui');
   }
   function pengajuanIzin()
@@ -168,10 +167,6 @@ class ControllerPegawai extends Controller
           ->join('pegawai', 'users.nip', '=', 'pegawai.nip')
           ->get();
 
-      // $izinId = Izin::where('id', $id)->first();
-          
-      // $tanggal = Carbon::parse('$izin->tanggal_izin')->format('d F Y');
-      // return dd($atasan);
       return view('pegawai/status_izin', compact('izin','pegawai','atasan','sdm','cuti'));
     }
 
@@ -292,11 +287,8 @@ class ControllerPegawai extends Controller
     }
   function deleteIzin($id)
     {
-        // Periksa status izin pengguna
         $status = Izin::where('id', $id)->first();
 
-        // Cek nilai status izin
-        // return var_dump($status);
         if ($status->status == 1 || $status->status == 2) {
           return response()->json(['success' => false, 'message' => 'Izin telah diperiksa, tidak dapat menghapus izin']);
         } elseif ($status->status == 0) {
@@ -305,38 +297,4 @@ class ControllerPegawai extends Controller
         }
         
     }
-  // public function suratPegawai(Request $request)
-  //   {
-        
-  //       Lang::setLocale('id');
-
-  //       $currentDate = Carbon::now();
-
-  //       $tanggal_sekarang = $currentDate->formatLocalized('%d %B %Y');
-
-  //       $phpWord = new \PhpOffice\PhpWord\TemplateProcessor('surat_izin.docx');
-
-  //       $phpWord->setValues([
-  //           'nama'                => $request->input('nama'),
-  //           'bidang'              => $request->input('bidang'),
-  //           'nip'                 => auth()->user()->nip,
-  //           'tanggal'             => $request->input('tanggal_izin'),
-  //           'waktu_keluar'        => $request->input('waktu_keluar'),
-  //           'waktu_kembali'       => $request->input('waktu_kembali'),
-  //           'keperluan'           => $request->input('keperluan'),
-  //           'uraian_keperluan'    => $request->input('uraian_keperluan'),
-  //           'nama_atasan'         => $request->input('nama_atasan'),
-  //           'tanggal_sekarang'    => $tanggal_sekarang,
-  //       ]);
-  //       // Cek nilai status izin
-  //       // return var_dump($status);
-  //       if ($status->status == 1 || $status->status == 2) {
-  //         return response()->json(['success' => false, 'message' => 'Izin telah diperiksa, tidak dapat menghapus izin']);
-  //       } elseif ($status->status == 0) {
-  //         $izin = Izin::where('id', $id)->delete();
-  //         return response()->json(['success' => true, 'message' => 'Izin berhasil dihapus']);
-  //       }
-        
-  //   }
-
 }

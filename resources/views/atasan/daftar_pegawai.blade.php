@@ -27,20 +27,12 @@
     <main class="content" id="main-content">
       <div class="container-fluid p-0">
         <h1 class="h3 mb-3"><strong>Pilih Team Leader</strong></h1>
-            <!-- <div class="info-msg">
-            <i class="fa fa-info-circle"></i>
-            This is an info message.
-            </div> -->
         @if(session('success'))
             <div class="success-msg">
             <i data-feather="check-circle"></i>
             {{ session('success') }}
             </div>
         @endif
-            <!-- <div class="warning-msg">
-            <i class="fa fa-warning"></i>
-            This is a warning message.
-            </div> -->
         @if(session('error'))
             <div class="error-msg">
             <i data-feather="alert-circle"></i> 
@@ -49,7 +41,6 @@
         @endif
         <div class="card">
             <div class="card-body">
-            <!-- <button type="button" class="btn btn-success"><i class="align-middle me-2" data-feather="plus"></i>Tambah</button> -->
             <table id="myTable" class="table table-hover my-0">
                 <thead>
                     <tr class="text-center">

@@ -138,37 +138,6 @@
                     {extend: 'print'},
                 ]
             });
-            // $('#filterDate').on('submit', function(e) {
-            //     e.preventDefault();
-            //     var formData = $(this).serialize();
-            //     $.ajax({
-            //         url: "{{ route('filterDate') }}",
-            //         type: "GET",
-            //         data: formData,
-            //         dataType: "json",
-            //         success: function(response) {
-            //             // Bersihkan tabel sebelum menambahkan data baru
-            //             $('#myTable tbody').empty();
-
-            //             // Iterasi melalui setiap izin dan tambahkan ke tabel
-            //             $.each(response, function(index, izin) {
-            //                 var row = '<tr>' +
-            //                     '<td class="d-none d-md-table-cell">' + izin.nama + '</td>' +
-            //                     '<td class="d-none d-md-table-cell">' + izin.bidang + '</td>' +
-            //                     '<td class="d-none d-xl-table-cell">' + izin.tanggal + '</td>' +
-            //                     '<td class="d-none d-xl-table-cell">' + izin.waktu_keluar + ' - ' + izin.waktu_kembali + ' WIB</td>' +
-            //                     '<td class="d-none d-xl-table-cell">' + (izin.keperluan == 0 ? '<span class="badge rounded-pill bg-secondary">Pribadi</span>' : '<span class="badge rounded-pill bg-primary">Dinas</span>') + '</td>' +
-            //                     '<td class="d-none d-xl-table-cell w-25" style="word-break: break-word;">' + izin.uraian_keperluan + '</td>' +
-            //                     '<td class="d-none d-xl-table-cell">' + izin.tgl_disetujui + '</td>' +
-            //                     '</tr>';
-            //                 $('#myTable tbody').append(row);
-            //             });
-            //         },
-            //         error: function(xhr) {
-            //             console.log(xhr.responseText);
-            //         }
-            //     });
-            // });
         });
     </script>
   <script src="{{ URL::asset('js/app.js') }}"></script>

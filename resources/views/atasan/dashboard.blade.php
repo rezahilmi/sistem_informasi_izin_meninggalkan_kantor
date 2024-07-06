@@ -245,7 +245,6 @@
     @include('layout.footer')
     </div>
   </div>
-  <!-- <script src="{{ URL::asset('js/charts.js') }}"></script> -->
   <script>
     $(document).ready(function() {
       var izin = @json($events);
@@ -260,7 +259,7 @@
             right: 'month,listWeek,listDay,dayGridWeek,dayGridDay'
           },
         height: 'auto',
-        now: moment(), // Set the current date and time
+        now: moment(),
         nowIndicator: true,
         views: {
           dayGridDay: {}

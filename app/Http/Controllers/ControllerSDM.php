@@ -29,20 +29,20 @@ use Illuminate\Support\Facades\Response;
 
 class ControllerSDM extends Controller
 {
-  function index()
-  {
+    function index()
+    {
     $countPribadi = Izin::where('nip',auth()->user()->nip)
-                      ->where('keperluan', 0)
-                      ->where('status', 1)
-                      ->whereYear('tanggal', date('Y'))
-                      ->count();
+                        ->where('keperluan', 0)
+                        ->where('status', 1)
+                        ->whereYear('tanggal', date('Y'))
+                        ->count();
     $countDinas = Izin::where('nip',auth()->user()->nip)
-                      ->where('keperluan', 1)
-                      ->where('status', 1)
-                      ->whereYear('tanggal', date('Y'))
-                      ->count();
+                        ->where('keperluan', 1)
+                        ->where('status', 1)
+                        ->whereYear('tanggal', date('Y'))
+                        ->count();
 
-  $countsIzinPerMonth = [];
+    $countsIzinPerMonth = [];
 
     for ($bulan = 1; $bulan <= 12; $bulan++) {
         $countIzin = Pegawai::where('pegawai.nip', auth()->user()->nip)
@@ -107,14 +107,6 @@ class ControllerSDM extends Controller
         }
         arsort($data1);
         arsort($data2);
-    // $pegawaiIzinDinas = Pegawai::whereHas('izin', function ($query) {
-    //     $query->where('keperluan', 1);
-    // })->with('izin')->get();
-
-    //     $data2 = [];
-    //     foreach ($pegawaiIzinDinas as $pegawai) {
-    //         $data2[$pegawai->nama] = $pegawai->izin->count();
-    //     }
 
     $belumDisetujui0 = Pegawai::join('izin','pegawai.nip','=','izin.nip')
             ->where('status', 0)
@@ -128,7 +120,6 @@ class ControllerSDM extends Controller
     if ($belumDisetujui0 > 0) {
         $persenBelumDisetujui = number_format(((($belumDisetujui1 - $belumDisetujui0) / $belumDisetujui0) * 100),2);
     } else {
-        // Jika jumlah izin bulan sebelumnya adalah 0, set persentase kenaikan ke 100% atau nilai lainnya sesuai kebutuhan
         $persenBelumDisetujui = 100;
     }
     $disetujui0 = Pegawai::join('izin','pegawai.nip','=','izin.nip')
@@ -143,7 +134,6 @@ class ControllerSDM extends Controller
     if ($disetujui0 > 0) {
         $persenDisetujui = number_format(((($disetujui1 - $disetujui0) / $disetujui0) * 100),2);
     } else {
-        // Jika jumlah izin bulan sebelumnya adalah 0, set persentase kenaikan ke 100% atau nilai lainnya sesuai kebutuhan
         $persenDisetujui = 100;
     }
     $tidakDisetujui0 = Pegawai::join('izin','pegawai.nip','=','izin.nip')
@@ -158,14 +148,12 @@ class ControllerSDM extends Controller
     if ($tidakDisetujui0 > 0) {
         $persenTidakDisetujui = number_format(((($tidakDisetujui1 - $tidakDisetujui0) / $tidakDisetujui0) * 100), 2);
     } else {
-        // Jika jumlah izin bulan sebelumnya adalah 0, set persentase kenaikan ke 100% atau nilai lainnya sesuai kebutuhan
         $persenTidakDisetujui = 100;
     }
-    // return dd($pegawai->count());
     return view('atasan/dashboard', compact('tidakDisetujui','disetujui','countsIzinPerMonth','countDinas','countPribadi','jumlahPegawai','events','data1','data2','countsPerMonth','pegawaiHariIni','belumDisetujui1','disetujui1','tidakDisetujui1','persenBelumDisetujui','persenDisetujui','persenTidakDisetujui'));
-  }
+    }
 
-  function getDaftarAkun()
+    function getDaftarAkun()
     {
         $akun = User::join('pegawai as e1', 'users.nip', '=', 'e1.nip')
             ->join('pegawai as e2', 'e1.nip_atasan','=','e2.nip')
@@ -182,7 +170,6 @@ class ControllerSDM extends Controller
             ->get();
         $bidangs = Bidang::all();
         $jabatans = Jabatan::all();
-        // return dd($atasan);
         return view('sdm/daftarAkun', compact('akun','atasans','keamanans','bidangs','jabatans'));
     }
     function getImporAkun()
@@ -202,42 +189,41 @@ class ControllerSDM extends Controller
         return Response::download($filePath, $fileName);
     }
     function imporPegawai(Request $request)
-    {
-      
-      try {
-          $request->validate([
-              'file' => 'required|mimes:xlsx',
-          ]);
-          Excel::import(new UserImport, request()->file('file'));
-          Excel::import(new PegawaiImport, request()->file('file'));
+    { 
+        try {
+            $request->validate([
+                'file' => 'required|mimes:xlsx',
+            ]);
+            Excel::import(new UserImport, request()->file('file'));
+            Excel::import(new PegawaiImport, request()->file('file'));
 
-          Toastr()->positionClass('toast-top-center')->addSuccess('Import data akun pegawai berhasil!');
-          return redirect()->back();
-      } catch (\Exception $e) {
-          Toastr()->positionClass('toast-top-center')->addError('Gagal mengimpor data akun pegawai. Pastikan format file benar dan coba lagi.');
-          return redirect()->back();
-      }
+            Toastr()->positionClass('toast-top-center')->addSuccess('Import data akun pegawai berhasil!');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr()->positionClass('toast-top-center')->addError('Gagal mengimpor data akun pegawai. Pastikan format file benar dan coba lagi.');
+            return redirect()->back();
+        }
     }
-  function updateAkun(Request $request, $nip)
+    function updateAkun(Request $request, $nip)
     {   
 
-      $request->validate([
-          'nip'.$nip      => 'numeric',
-          'email'.$nip    => [
-                                  'required',
-                                  'email',
-                              ],
-          'password'.$nip => 'nullable|min:6',
-          'nama'.$nip     => 'string|max:255',
-      ], [
-          'nip'.$nip.'numeric'       => 'NIP harus berupa angka.',
-          'email'.$nip.'required'    => 'Email wajib diisi.',
-          'email'.$nip.'email'       => 'Format email tidak valid.',
-          'email'.$nip.'unique'      => 'Email sudah digunakan oleh pengguna lain.',
-          'password'.$nip.'min'      => 'Password minimal harus 6 karakter.',
-          'nama'.$nip.'string'       => 'Nama harus berupa teks.',
-          'nama'.$nip.'max'          => 'Nama tidak boleh lebih dari :max karakter.',
-      ]);
+        $request->validate([
+            'nip'.$nip      => 'numeric',
+            'email'.$nip    => [
+                                    'required',
+                                    'email',
+                                ],
+            'password'.$nip => 'nullable|min:6',
+            'nama'.$nip     => 'string|max:255',
+        ], [
+            'nip'.$nip.'numeric'       => 'NIP harus berupa angka.',
+            'email'.$nip.'required'    => 'Email wajib diisi.',
+            'email'.$nip.'email'       => 'Format email tidak valid.',
+            'email'.$nip.'unique'      => 'Email sudah digunakan oleh pengguna lain.',
+            'password'.$nip.'min'      => 'Password minimal harus 6 karakter.',
+            'nama'.$nip.'string'       => 'Nama harus berupa teks.',
+            'nama'.$nip.'max'          => 'Nama tidak boleh lebih dari :max karakter.',
+        ]);
         try {
             $updateData = [
                 'nip'   => $request->input('nip'.$nip),
@@ -266,23 +252,23 @@ class ControllerSDM extends Controller
             return redirect()->back();
         }
     }
-  function updateAkunKeamanan(Request $request, $nip)
+    function updateAkunKeamanan(Request $request, $nip)
     {   
 
-      $request->validate([
-          'email'.$nip    => [
-                                  'required',
-                                  'email',
-                              ],
-          'password'.$nip => 'nullable|min:6',
-          'nama'.$nip     => 'string|max:255',
-      ], [
-          'email'.$nip.'email'       => 'Format email tidak valid.',
-          'email'.$nip.'unique'      => 'Email sudah digunakan oleh pengguna lain.',
-          'password'.$nip.'min'      => 'Password minimal harus 6 karakter.',
-          'nama'.$nip.'string'       => 'Nama harus berupa teks.',
-          'nama'.$nip.'max'          => 'Nama tidak boleh lebih dari :max karakter.',
-      ]);
+        $request->validate([
+            'email'.$nip    => [
+                                    'required',
+                                    'email',
+                                ],
+            'password'.$nip => 'nullable|min:6',
+            'nama'.$nip     => 'string|max:255',
+        ], [
+            'email'.$nip.'email'       => 'Format email tidak valid.',
+            'email'.$nip.'unique'      => 'Email sudah digunakan oleh pengguna lain.',
+            'password'.$nip.'min'      => 'Password minimal harus 6 karakter.',
+            'nama'.$nip.'string'       => 'Nama harus berupa teks.',
+            'nama'.$nip.'max'          => 'Nama tidak boleh lebih dari :max karakter.',
+        ]);
         try {
             $updateData = [
                 'email' => $request->input('email'.$nip),
@@ -305,13 +291,13 @@ class ControllerSDM extends Controller
             return redirect()->back();
         }
     }
-  function deleteAkun($nip)
+    function deleteAkun($nip)
     {
-      $akun = User::where('nip', $nip)->delete();
-      $pegawai = Pegawai::where('nip', $nip)->delete();
-      return response()->json(['success' => true, 'message' => 'Akun berhasil dihapus']);
+        $akun = User::where('nip', $nip)->delete();
+        $pegawai = Pegawai::where('nip', $nip)->delete();
+        return response()->json(['success' => true, 'message' => 'Akun berhasil dihapus']);
     }
-  function getTambahAkun()
+    function getTambahAkun()
     {
         $atasans = User::join('pegawai', 'users.nip', '=','pegawai.nip')
             ->where('role', 'atasan')
@@ -322,28 +308,28 @@ class ControllerSDM extends Controller
 
         return view('sdm/tambahAkun',compact('atasans','bidangs','jabatans'));
     }
-  function tambahAkun(Request $request)
+    function tambahAkun(Request $request)
     {
-      $request->validate([
-          'nip'      => 'required|numeric',
-          'email'    => 'required|email|unique:users,email',
-          'password' => 'required|min:6',
-          'nama'     => 'required|string|max:255',
-          'role'     => 'required',
-      ], [
-          'nip.required'      => 'NIP wajib diisi.',
-          'nip.numeric'       => 'NIP harus berupa angka.',
-          'email.required'    => 'Email wajib diisi.',
-          'email.email'       => 'Format email tidak valid.',
-          'email.unique'      => 'Email sudah digunakan oleh pengguna lain.',
-          'password.min'      => 'Password minimal harus 6 karakter.',
-          'password.required' => 'Password wajib diisi.',
-          'nama.required'     => 'Nama wajib diisi.',
-          'nama.string'       => 'Nama harus berupa teks.',
-          'nama.max'          => 'Nama tidak boleh lebih dari :max karakter.',
-          'role.required'     => 'Pilih role.',
-      ]);
-      try {
+        $request->validate([
+            'nip'      => 'required|numeric',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'nama'     => 'required|string|max:255',
+            'role'     => 'required',
+        ], [
+            'nip.required'      => 'NIP wajib diisi.',
+            'nip.numeric'       => 'NIP harus berupa angka.',
+            'email.required'    => 'Email wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
+            'email.unique'      => 'Email sudah digunakan oleh pengguna lain.',
+            'password.min'      => 'Password minimal harus 6 karakter.',
+            'password.required' => 'Password wajib diisi.',
+            'nama.required'     => 'Nama wajib diisi.',
+            'nama.string'       => 'Nama harus berupa teks.',
+            'nama.max'          => 'Nama tidak boleh lebih dari :max karakter.',
+            'role.required'     => 'Pilih role.',
+        ]);
+        try {
 
         User::create([
             'nip'      => $request->input('nip'),
@@ -363,7 +349,7 @@ class ControllerSDM extends Controller
         toastr()->positionClass('toast-top-center')->addSuccess('Akun berhasil ditambahkan!');
         return redirect()->back();
     } catch (QueryException $e) {
-        if ($e->errorInfo[1] == 1062) { // Duplicate entry error code
+        if ($e->errorInfo[1] == 1062) { 
             toastr()->positionClass('toast-top-center')->addError('Duplikat NIP ditemukan.');
             return redirect()->back()->withInput($request->input());
         } else {
@@ -371,6 +357,6 @@ class ControllerSDM extends Controller
             return redirect()->back()->withInput($request->input());
         }
     }
-  }
+    }
 
 }

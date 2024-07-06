@@ -140,10 +140,10 @@ a[x-apple-data-detectors] {
                        </table></td>
                      </tr>
                      <tr style="border-collapse:collapse">
-                      <td align="left" style="padding:0;Margin:0;padding-bottom:10px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:24px;color:#666666;font-size:16px">Halo, {{ $keamanan->nama }},</p></td>
+                      <td align="left" style="padding:0;Margin:0;padding-bottom:10px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:24px;color:#666666;font-size:16px">Halo {{ $keamanan->nama }},</p></td>
                      </tr>
                      <tr style="border-collapse:collapse">
-                      <td align="left" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:21px;color:#666666;font-size:14px">{{ $keamanan->nama }}NIP. {{ $keamanan->nip }} izin meninggalkan kantor pada tanggal {{ $keamanan->tanggal }}, dimulai dari jam {{ $jam->keluar }} hingga {{ $jam->kembali }}. Terlampir dalam email ini surat izin yang relevan. Silakan klik tombol di bawah untuk melihat detail izin.</p></td>
+                      <td align="left" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:21px;color:#666666;font-size:14px">{{ $pegawai->nama }} NIP. {{ $pegawai->nip }} izin meninggalkan kantor pada tanggal {{ date('d F Y', strtotime($pegawai->tanggal)) }}, dimulai dari jam {{ date('h:i A', strtotime($pegawai->waktu_keluar)) }} hingga {{ date('h:i A', strtotime($pegawai->waktu_kembali)) }}. Terlampir dalam email ini surat izin yang relevan. Silakan klik tombol di bawah untuk melihat detail izin.</p></td>
                      </tr>
                    </table></td>
                  </tr>
